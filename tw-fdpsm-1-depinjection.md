@@ -96,40 +96,44 @@ public void bind(ExampleActivity activity) {
 
 # [ButterKnife - CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-butterknife)
 
-## AndroidAnnotations 1
+# AndroidAnnotations
+
+## AndroidAnnotations - 1 - Introduction
 
 * AndroidAnnotations support a number of different features, including view injection and listener binding!
 * Not as focused as Butter Knife:
-	* Supports "real" dependency injection and resource injection
-	* Supports event binding
-	* Thread binding
-	* REST API binding
-	* Android Preference API helpers / typesafty
+    * Supports "real" dependency injection and resource injection
+    * Supports event binding
+    * Thread binding
+    * REST API binding
+    * Android Preference API helpers / typesafty
 
-## AndroidAnnotations 2
+## AndroidAnnotations - 2 - Introduction cont.
+
 * Since AndroidAnnotations is a very large framework, we will not cover everything here
 * We will only cover view injection and event binding
 * Unlike other Android frameworks, AndroidAnnotations is well documented
 * See these resources for more information on the topic [here](https://github.com/excilys/androidannotations/wiki/AvailableAnnotations)
 
-## AndroidAnnotations 3
+## AndroidAnnotations - 3 - Introduction cont.
+
 * Unlike Butter Knife, which needs to be bound manually, AndroidAnnotations will generate code from annotated classes
 * That also means that we need to be careful when calling our components in Java code or XML.
-	* Our Activity / Fragment / Service / ContentProvider / etc is not the one that will be used during runtime, we need to reference the actual component by denoting (postfixing) it with an "\_", MainActivity.class becomes MainActivity\_.class, even in AndroidManifest.xml declaration!
+    * Our Activity / Fragment / Service / ContentProvider / etc is not the one that will be used during runtime, we need to reference the actual component by denoting (postfixing) it with an "\_", MainActivity.class becomes MainActivity\_.class, even in AndroidManifest.xml declaration!
 * Generated files can be found in build/generated/source/apt/debug
 
-## AndroidAnnotations 4
+## AndroidAnnotations - 4 - Injection
+
 * AndroidAnnotations features a set of annotations to make the framework recognize these classes as annotated (Enhanced Components)
 * Please note that fields, which we want to inject using AndroidAnnotations must not be `private`
 
-## AndroidAnnotations 5
+## AndroidAnnotations - 4 - Annotations
+
 * We will cover all annotations that allow us to mimic the behavior of Butter Knife:
-	* @ViewById: corresponds to @Bind
-	* @Click: corresponds to @OnClick
-	* @[]Res: Corresponds to @Bind[]
+    * @ViewById: corresponds to @BindView
+    * @Click: corresponds to @OnClick
+    * @[]Res: Corresponds to @Bind[]
 
-## AndroidAnnotations 6
-
-[CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-androidannotations)
+# [AndroidAnnotations - CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-androidannotations)
 
 # Any Questions?
