@@ -127,7 +127,7 @@ public void bind(ExampleActivity activity) {
 * AndroidAnnotations features a set of annotations to make the framework recognize these classes as annotated (Enhanced Components)
 * Please note that fields, which we want to inject using AndroidAnnotations must not be `private`
 
-## AndroidAnnotations - 4 - Annotations
+## AndroidAnnotations - 5 - Annotations
 
 * We will cover all annotations that allow us to mimic the behavior of Butter Knife:
     * @ViewById: corresponds to @BindView
