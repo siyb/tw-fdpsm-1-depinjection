@@ -14,6 +14,7 @@
 * Recap: annotations
 * ButterKnife
 * Android Annotations
+* dagger 2
 
 ## Recap: Annotations - 1 - Example: Declaration
 
@@ -62,7 +63,8 @@ a.testField();
 * It does two things (and does them well):
     * Resource Injection
     * Listener Bindings
-* If you want something more sophisticated and less focused, AndroidAnnotations might be more to your liking
+* Uses code generation, older versions rely on reflections
+* If you want something more sophisticated and less focused, AndroidAnnotations / Dagger 2 might be more to your liking
 
 ## Butter Knife - 2 - Supported Annotations
 
@@ -113,6 +115,7 @@ public void bind(ExampleActivity activity) {
 * Since AndroidAnnotations is a very large framework, we will not cover everything here
 * We will only cover view injection and event binding
 * Unlike other Android frameworks, AndroidAnnotations is well documented
+* Uses code generation
 * See these resources for more information on the topic [here](https://github.com/excilys/androidannotations/wiki/AvailableAnnotations)
 
 ## AndroidAnnotations - 3 - Introduction cont.
@@ -135,5 +138,77 @@ public void bind(ExampleActivity activity) {
     * @[]Res: Corresponds to @Bind[]
 
 # [AndroidAnnotations - CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-androidannotations)
+
+# Dagger
+
+## Dagger- 1 - Introduction
+
+* We are only looking at Dagger 2 today
+* Relies on code generation
+* Uses annotations to inject instances
+* Very similar to what you know from Java DPI (javax.inject.*) or guice
+* Somewhat different to AndroidAnnotations and ButterKnife
+    * No android specific dependency injection
+* Injected fields must not be private
+
+## Dagger - 2 - Annotations: @Inject
+
+* @Inject - inject an instance (Dagger uses the javax.inject.Inject Annotation!)
+* Supports field, ctor and method injection
+* Preferred: field and ctor (some people argue that you should only use ctor injections in order to tell the user, which dependencies are required for manual instantiation)
+* If you are using field injections, Dagger will not create new instances
+    * Add a no parameter ctor and annotate it with @Inject in order to tell Dagger to initialize dependencies
+* Default behaviour: @Inject -> new MyClass();
+
+## Dagger - 3 - Example: @Inject
+
+```java
+public class MyClass {
+  @Inject
+  private Mydependecy;
+
+  @Inject
+  public MyClass() {
+  }
+}
+```
+
+## Dagger - 4 - Annotations: @Provides
+
+* @Provides - provide instances to be injected
+* To be used when you want to inject:
+    * Interface implementations
+    * 3rd party stuff
+    * Complex objects that to be set up
+* Use it to annotate methods, the return type of the method is the one that is provided
+* Methods annotated with the @Provides annotation must be part of a @Module
+* ... they can also have other dependencies!
+
+## Dagger - 5 - Example: @Provides
+
+```java
+@Module
+public class MyModule {
+  @Provides
+  public static MyDependency provideMyDependency() {
+      MyDependency res = new MyDependecy();
+      res.setName("Test");
+      return res;
+  }
+  @Provides
+  public static MyOtherDependency 
+    provideMyOtherDependency(MyDependency myDependency) {
+      MyOtherDependency res = new MyOtherDependency();
+      res.setMyDependency(myDependency);
+      return res;
+  }
+}
+```
+
+## Dagger - 6 - Annotations: @Singleton
+
+* @Singleton - provide a singleton instance (Dagger uses the javax.inject.Singleton Annotation!)
+* Used in conjunction with @Provides or at a class annotation (injectable class)
+
 
 # Any Questions?
