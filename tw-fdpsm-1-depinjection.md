@@ -250,7 +250,7 @@ public class MyClickListener {
             type="com.test.MyClickListener"/>
     </data>
     <Button
-       android:onClick="listener::onClick" />
+       android:onClick="@{listener::onClick}" />
 </layout>
 ```
 
@@ -284,7 +284,7 @@ public class MyListener {
             type="com.test.MyClass">
     </data>
     <Button
-       android:onClick="() -> listener.onClick(myClass)" />
+       android:onClick="@{() -> listener.onClick(myClass)}" />
 </layout>
 ```
 
