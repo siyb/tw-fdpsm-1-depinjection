@@ -153,7 +153,7 @@ protected void onCreate(Bundle savedInstanceState) {
    ActivityMainBinding binding = DataBindingUtil
        .setContentView(this, R.layout.activity_main);
    // while setting an id is not required, doing so
-   // allow access to the View via the binding.
+   // allows access to the View via the binding.
    binding.myTextView.getId(); 
    MyClass myClass = new MyClass("some data");
    binding.setMyClass(myClass);
@@ -287,7 +287,7 @@ public class MyListener {
 
 ## Data Binding Library - 16 - Explanation
 
-* Uses "Java Style" lambda expression
+* Uses "Java Style" lambda expressions
     * You can either choose to supply or ommit all parameters of the lambda expression
     * Make sure that your handler returns the data expected by the original listener!
 * You may choose to implement your listener interface as you wish (e.g. multiple parameters)
@@ -318,16 +318,21 @@ public MyClass extends BaseObservable {
 
 ## Data Binding Library - 19 - Explanation
 
-* All binable access methods must be declared @Bindable
+* All bindable access methods must be declared @Bindable
     * Careful: only methods that adhere to the JavaBeans spec are supported!
-* The Databinding Library will create the BR class that contains references of bindable properties
+* The Databinding Library generates the BR class, containing references of bindable properties
 * Using ```notifyPropertyChanged``` the specified property is marked as dirty and thus, can be refreshed in the UI.
 
 ## Data Binding Library - 20 - Observable Types
 
 * The Data Binding Library also supports observable types.
     * ObservableField<T> - generic, observes the field's value only, does not detect state changes in the field itself!
-    * Observable[Byte,Char,Short,Int,Long,Float,Double,Fields,Map,ArrayMap,ArrayList]
+    * Observable[Byte,Char,Short,Int,Long,Float,Double,Fields,
+        Map,ArrayMap,ArrayList]
 * No manual wiring necessary, but access is tedious and the use of specialized fields might seem to intrusive to some.
+
+## Data Binding Library - 21 - Advanced Features
+
+* Please check out: ViewStubs, Converters, Custom Setters and Attribute Setters at home ;)
 
 # Any Questions?
