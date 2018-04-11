@@ -137,6 +137,7 @@ android.databinding.enableV2=true
             type="com.test.MyClass"/>
     </data>
     <TextView
+       android:id="@+id/myTextView"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:text="@{myclassalias.field}" />
@@ -151,6 +152,9 @@ protected void onCreate(Bundle savedInstanceState) {
    super.onCreate(savedInstanceState);
    ActivityMainBinding binding = DataBindingUtil
        .setContentView(this, R.layout.activity_main);
+   // while setting an id is not required, doing so
+   // allow access to the View via the binding.
+   binding.myTextView.getId(); 
    MyClass myClass = new MyClass("some data");
    binding.setMyClass(myClass);
 }
