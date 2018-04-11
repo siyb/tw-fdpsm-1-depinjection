@@ -1,6 +1,6 @@
-% View- and Dependency Injection
+% Dependency Injection and View Binding
 % Patrick Sturm
-% 12.10.2016
+% 11.04.2018
 
 ## Information
 
@@ -13,8 +13,7 @@
 
 * Recap: annotations
 * ButterKnife
-* Android Annotations
-* dagger 2
+* Android Data Binding Library
 
 ## Recap: Annotations - 1 - Example: Declaration
 
@@ -64,14 +63,15 @@ a.testField();
     * Resource Injection
     * Listener Bindings
 * Uses code generation, older versions rely on reflections
-* If you want something more sophisticated and less focused, AndroidAnnotations / Dagger 2 might be more to your liking
+* If you want something more sophisticated and less focused, Dagger 2 might be more to your liking
 
 ## Butter Knife - 2 - Supported Annotations
 
 * Butter Knife supports the following Annotations:
-    * @BindView: allows view bindings
-    * @Bind[Drawable,Bool,Color,Dimen,Int,String]: binds resource type
-    * @OnClick: mark method as click listener for specified button
+    * @BindView(s): allows view bindings
+    * @Bind[Array,Bitmap,Drawable,Bool,Color,Dimen,Int,String,Float,Font,Anim]: binds resource type
+    * @On[Click,Touch,CheckChange,EditorAction,FocusChange,ItemClick,
+        ItemLongClick,ItemSelected,LongClick,TextChanged]: mark method as click listener for specified action
 
 ## Butter Knife - 3 - Mechanism
 
@@ -88,127 +88,242 @@ Taken From: [http://jakewharton.github.io/butterknife/](http://jakewharton.githu
 ```java
 public void bind(ExampleActivity activity) {
   activity.subtitle = 
-    (android.widget.TextView) activity.findViewById(2130968578);
+    (android.widget.TextView) activity
+        .findViewById(2130968578);
   activity.footer = 
-    (android.widget.TextView) activity.findViewById(2130968579);
+    (android.widget.TextView) activity
+        .findViewById(2130968579);
   activity.title = 
-    (android.widget.TextView) activity.findViewById(2130968577);
+    (android.widget.TextView) activity
+        .findViewById(2130968577);
 }
 ```
 
 # [ButterKnife - CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-butterknife)
 
-# AndroidAnnotations
+## Data Binding Library - 1 - Intro
 
-## AndroidAnnotations - 1 - Introduction
+* Part of the support library.
+* Eliminates view and event listener binding glue code by generating the glue code for you - similar to what ButterKnife does.
+* Supports two different compilers, V2 is not backwards compatible - only an issue with precompiled libraries.
 
-* AndroidAnnotations support a number of different features, including view injection and listener binding!
-* Not as focused as Butter Knife:
-    * Supports "real" dependency injection and resource injection
-    * Supports event binding
-    * Thread binding
-    * REST API binding
-    * Android Preference API helpers / typesafty
+## Data Binding Library - 2 - Build File / Gradle Properties
 
-## AndroidAnnotations - 2 - Introduction cont.
+Enable Data Binding in build file:
 
-* Since AndroidAnnotations is a very large framework, we will not cover everything here
-* We will only cover view injection and event binding
-* Unlike other Android frameworks, AndroidAnnotations is well documented
-* Uses code generation
-* See these resources for more information on the topic [here](https://github.com/excilys/androidannotations/wiki/AvailableAnnotations)
+```groovy
+    android {
+       ...
+        dataBinding {
+            enabled = true
+        }
+    }
+```
+Use V2 compiler, gradle.properties:
+```
+android.databinding.enableV2=true
+```
 
-## AndroidAnnotations - 3 - Introduction cont.
+## Data Binding Library - 3 - First Layout
 
-* Unlike Butter Knife, which needs to be bound manually, AndroidAnnotations will generate code from annotated classes
-* That also means that we need to be careful when calling our components in Java code or XML.
-    * Our Activity / Fragment / Service / ContentProvider / etc is not the one that will be used during runtime, we need to reference the actual component by denoting (postfixing) it with an "\_", MainActivity.class becomes MainActivity\_.class, even in AndroidManifest.xml declaration!
-* Generated files can be found in build/generated/source/apt/debug
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android=
+    "http://schemas.android.com/apk/res/android">
+    <data>
 
-## AndroidAnnotations - 4 - Injection
+        <variable
+            name="myclassalias"
+            type="com.test.MyClass"/>
+    </data>
+    <TextView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:text="@{myclassalias.field}" />
+</layout>
+```
 
-* AndroidAnnotations features a set of annotations to make the framework recognize these classes as annotated (Enhanced Components)
-* Please note that fields, which we want to inject using AndroidAnnotations must not be `private`
-
-## AndroidAnnotations - 5 - Annotations
-
-* We will cover all annotations that allow us to mimic the behavior of Butter Knife:
-    * @ViewById: corresponds to @BindView
-    * @Click: corresponds to @OnClick
-    * @[]Res: Corresponds to @Bind[]
-
-# [AndroidAnnotations - CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-androidannotations)
-
-# Dagger
-
-## Dagger- 1 - Introduction
-
-* We are only looking at Dagger 2 today
-* Relies on code generation
-* Uses annotations to inject instances
-* Very similar to what you know from Java DPI (javax.inject.*) or guice
-* Somewhat different to AndroidAnnotations and ButterKnife
-    * No android specific dependency injection
-* Injected fields must not be private
-
-## Dagger - 2 - Annotations: @Inject
-
-* @Inject - inject an instance (Dagger uses the javax.inject.Inject Annotation!)
-* Supports field, ctor and method injection
-* Preferred: field and ctor (some people argue that you should only use ctor injections in order to tell the user, which dependencies are required for manual instantiation)
-* If you are using field injections, Dagger will not create new instances
-    * Add a no parameter ctor and annotate it with @Inject in order to tell Dagger to initialize dependencies
-* Default behaviour: @Inject -> new MyClass();
-
-## Dagger - 3 - Example: @Inject
+## Data Binding Library - 4 - Corresponding Activity
 
 ```java
-public class MyClass {
-  @Inject
-  private Mydependecy;
-
-  @Inject
-  public MyClass() {
-  }
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+   super.onCreate(savedInstanceState);
+   ActivityMainBinding binding = DataBindingUtil
+       .setContentView(this, R.layout.activity_main);
+   MyClass myClass = new MyClass("some data");
+   binding.setMyClass(myClass);
 }
 ```
 
-## Dagger - 4 - Annotations: @Provides
+## Data Binding Library - 5 - Explanation - 1
 
-* @Provides - provide instances to be injected
-* To be used when you want to inject:
-    * Interface implementations
-    * 3rd party stuff
-    * Complex objects that to be set up
-* Use it to annotate methods, the return type of the method is the one that is provided
-* Methods annotated with the @Provides annotation must be part of a @Module
-* ... they can also have other dependencies!
+* Layout must be encapsulated using the "layout" element.
+* Data binding must be configured in "data -> variable" element.
+    * Compiletime type safety
+    * Careful: multi-layout variable declarations (e.g. layout-port and layout-land) must be unique, otherwise they cause errors on code generation.
+    * ```context``` variable is created for you.
+* Expressions are defined using @{expression}.
+    * Expressions automatically checks for null pointer access and prevents crashes by using default values instead.
 
-## Dagger - 5 - Example: @Provides
+## Data Binding Library - 6 - Explanation - 2
+
+* The Data Binding Library will generate a ${layout}Binding class for you, that you must use to create the binding.
+    * Getters and setters are generated for each of the variables that you defined.
+    * You can use the "class" attribute of data to override the default generated name of the binding class.
+* Properties that you are referring to must either be publicly accessible via an accessor method or must be declared public.
+    * ```public String foo()``` or ```public String foo``` would work.
+    * Make sure to provide correct access methods, e.g. if you want to bind an float to a TextView, you need to provide the appropriate getter.
+* Bind the data directly after View inflation to prevent problematic changes of the layout.
+
+## Data Binding Library - 7 - Advanced Expressions - 1
+
+* The "data -> import" element may be used to import Java classes...
+    * Features alias support to circumvent naming conflicts.
+    * Allows accessing static fields and methods.
+* Similary, ```<include />``` can be configured to pass on bindings, using the ```bind``` attribute.
+
+## Data Binding Library - 8 - Advanced Expressions - 2 - Example
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <import type="com.test.Info">
+        <variable
+            name="myclassalias"
+            type="com.test.MyClass"/>
+    </data>
+    <TextView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:text=
+           "@{info.MORE_INFO ? 
+                myclassalias.moreInfoField : 
+                myclassalias.lessInfoField}" />
+</layout>
+```
+
+## Data Binding Library - 9 - Advanced Expressions - 3 - Operators and Advanced References
+
+* The Data Binding Library supports various Java operators
+    * Arithmetic operators, String concatination, Logical, Binary, Tenary and Unary operators, Shifting operators and Comparisons operators.
+    * Support for ?? - x ?? y -> x != null ? x : y
+* It also supports
+    * Casting, calling methods, accessings fields (including arrays) and the use of various literals
+* It does not support access to: this, super, new, generics
+* You can also reference other resources within your expressions:
+    * android:text="@{user.isAdmin() ? @string/such_admin_wow : @string/puny_user}"
+
+## Data Binding Library - 10 - Advanced Expressions - 3 - Collection Access and Listener Bindings 
+
+* Using ```@{myCollection["item"]}``` you can access individual items of a collection, indecies are also supported.
+* The Data Binding Library also supports method references and listener bindings
+
+
+## Data Binding Library - 11 - Method References Example - 1
 
 ```java
-@Module
-public class MyModule {
-  @Provides
-  public static MyDependency provideMyDependency() {
-      MyDependency res = new MyDependecy();
-      res.setName("Test");
-      return res;
-  }
-  @Provides
-  public static MyOtherDependency 
-    provideMyOtherDependency(MyDependency myDependency) {
-      MyOtherDependency res = new MyOtherDependency();
-      res.setMyDependency(myDependency);
-      return res;
-  }
+public class MyClickListener {
+    // careful: method signature!
+    public void onClick(View v) {
+        // code here
+    }
 }
 ```
 
-## Dagger - 6 - Annotations: @Singleton
+## Data Binding Library - 12 - Method References Example - 2
 
-* @Singleton - provide a singleton instance (Dagger uses the javax.inject.Singleton Annotation!)
-* Used in conjunction with @Provides or at a class annotation (injectable class)
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="listener"
+            type="com.test.MyClickListener"/>
+    </data>
+    <Button
+       android:onClick="listener::onClick" />
+</layout>
+```
 
+## Data Binding Library - 13 - Explanation
+
+* Uses "Java Style" method references
+* Make sure that the signature of the callback matches the indended callback of the actual listener interface that you are binding.
+
+## Data Binding Library - 14 - Listener Example - 1
+
+```java
+public class MyListener {
+    // careful: method signature!
+    public void onClick(MyClass c) {
+        // code here
+    }
+}
+```
+
+## Data Binding Library - 15 - Listener Example - 2
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="listener"
+            type="com.test.MyListener"/>
+        <variable 
+            name="myClass"
+            type="com.test.MyClass">
+    </data>
+    <Button
+       android:onClick="() -> listener.onClick(myClass)" />
+</layout>
+```
+
+## Data Binding Library - 16 - Explanation
+
+* Uses "Java Style" lambda expression
+    * You can either choose to supply or ommit all parameters of the lambda expression
+    * Make sure that your handler returns the data expected by the original listener!
+* You may choose to implement your listener interface as you wish (e.g. multiple parameters)
+
+## Data Binding Library - 17 - Two Way Binding
+
+* This is where things get really interesting.
+* We have only looked at regular POJO binding so far:
+    * As soon as the binding has been established, successive changes to the POJO will refresh the UI.
+    * Two Way binding facilitates real time refreshes of UI based on the state of the POJO.
+* You need to implement the ```Observable``` interface or extend the ```BaseObservable``` convenience implementation to make your bindings two way.
+
+## Data Binding Library - 18 - Example
+
+```java
+public MyClass extends BaseObservable {
+    private String myString;
+
+    @Bindable public String getMyString() {
+        return myString;
+    }
+    public String setMyString(String myString) {
+        this.myString = myString;
+         notifyPropertyChanged(BR.myString);
+    }
+}
+```
+
+## Data Binding Library - 19 - Explanation
+
+* All binable access methods must be declared @Bindable
+    * Careful: only methods that adhere to the JavaBeans spec are supported!
+* The Databinding Library will create the BR class that contains references of bindable properties
+* Using ```notifyPropertyChanged``` the specified property is marked as dirty and thus, can be refreshed in the UI.
+
+## Data Binding Library - 20 - Observable Types
+
+* The Data Binding Library also supports observable types.
+    * ObservableField<T> - generic, observes the field's value only, does not detect state changes in the field itself!
+    * Observable[Byte,Char,Short,Int,Long,Float,Double,Fields,Map,ArrayMap,ArrayList]
+* No manual wiring necessary, but access is tedious and the use of specialized fields might seem to intrusive to some.
 
 # Any Questions?
