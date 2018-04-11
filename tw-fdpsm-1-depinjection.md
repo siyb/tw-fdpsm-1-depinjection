@@ -15,6 +15,8 @@
 * ButterKnife
 * Android Data Binding Library
 
+# Annotation Recap
+
 ## Recap: Annotations - 1 - Example: Declaration
 
 ```java
@@ -55,6 +57,8 @@ MyAnnotation a = (MyAnnotation) myObject
 // getting our value!
 a.testField();
 ```
+
+# ButterKnife
 
 ## Butter Knife - 1 - Intro
 
@@ -343,5 +347,7 @@ public MyClass extends BaseObservable {
 ## Data Binding Library - 22 - Advanced Features
 
 * Please check out: ViewStubs, Converters, Custom Setters and Attribute Setters at home ;)
+
+# [Data Binding Library - Code Example](https://github.com/SphericalElephant/android-example-databinding)
 
 # Any Questions?
