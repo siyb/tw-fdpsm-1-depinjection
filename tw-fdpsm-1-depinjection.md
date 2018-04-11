@@ -35,8 +35,8 @@ public interface @MyAnnotation {
     * CLASS: default, available in class file and source code (e.g.: compile time checks in external lib)
     * RUNTIME: available at runtime, in class file and source code (everything that requires runtime checks)
 * Target
-   * Defines what kind of construct can be annotated using this annotation (can be left out)
-   * Can be a number of things including: FIELD, METHOD and TYPE
+    * Defines what kind of construct can be annotated using this annotation (can be left out)
+    * Can be a number of things including: FIELD, METHOD and TYPE
 
 ## Recap Annotations - 3 - Example: Usage
 
@@ -71,7 +71,7 @@ a.testField();
     * @BindView(s): allows view bindings
     * @Bind[Array,Bitmap,Drawable,Bool,Color,Dimen,Int,String,Float,Font,Anim]: binds resource type
     * @On[Click,Touch,CheckChange,EditorAction,FocusChange,ItemClick,
-        ItemLongClick,ItemSelected,LongClick,TextChanged]: mark method as click listener for specified action
+        ItemLongClick,ItemSelected,LongClick,TextChanged]: mark method as listener for specified action
 
 ## Butter Knife - 3 - Mechanism
 
@@ -101,10 +101,12 @@ public void bind(ExampleActivity activity) {
 
 # [ButterKnife - CODE EXAMPLE!](https://github.com/SphericalElephant/android-example-butterknife)
 
+# Databinding Library
+
 ## Data Binding Library - 1 - Intro
 
 * Part of the support library.
-* Eliminates view and event listener binding glue code by generating the glue code for you - similar to what ButterKnife does.
+* Eliminates view and event listener binding boilerplate code by generating the glue code for you - similar to what ButterKnife does.
 * Supports two different compilers, V2 is not backwards compatible - only an issue with precompiled libraries.
 
 ## Data Binding Library - 2 - Build File / Gradle Properties
@@ -218,6 +220,7 @@ protected void onCreate(Bundle savedInstanceState) {
 * It does not support access to: this, super, new, generics
 * You can also reference other resources within your expressions:
     * android:text="@{user.isAdmin() ? @string/such_admin_wow : @string/puny_user}"
+* CAREFUL: Make sure not to violate SOC (separation of concerns) by introducing overly complex expressions!
 
 ## Data Binding Library - 10 - Advanced Expressions - 3 - Collection Access and Listener Bindings 
 
@@ -331,7 +334,13 @@ public MyClass extends BaseObservable {
         Map,ArrayMap,ArrayList]
 * No manual wiring necessary, but access is tedious and the use of specialized fields might seem to intrusive to some.
 
-## Data Binding Library - 21 - Advanced Features
+## Data Binding Library - 21 - Criticism
+
+* Possible issues when writing unit tests due increased complexibility
+* Cluttered (view)model classes
+* Slowing down of build process
+
+## Data Binding Library - 22 - Advanced Features
 
 * Please check out: ViewStubs, Converters, Custom Setters and Attribute Setters at home ;)
 
